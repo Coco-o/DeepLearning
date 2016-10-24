@@ -3,14 +3,12 @@ import numpy as np
 import argparse
 import neural_network
 
-# run neural network model and plot error curves
 def parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('-b', '--beta')
     parser.add_argument('-a', '--alpha')
     parser.add_argument('-l', '--lmbda')
     parser.add_argument('-e', '--epoch')
-    parser.add_argument('-d', '--dropout')
     parser.add_argument('-i', '--hidden')
 
     return parser.parse_args()
@@ -61,14 +59,14 @@ def main():
     beta = float(args.beta)
     lmbda = float(args.lmbda)
     epoch = int(args.epoch)
-    dropout = True
 
-    model = neural_network.Model(dropout)
+    model = neural_network.Model()
     model.add(neural_network.Sigmoid(784, hidden))
     model.add(neural_network.Softmax(hidden, 10))
 
-    Xtrain, Ytrain = load_data('/data/digitstrain.txt')
-    Xvalid, Yvalid = load_data('/data/digitsvalid.txt')
+    Xtrain, Ytrain = load_data('digitstrain.txt')
+    Xvalid, Yvalid = load_data('digitsvalid.txt')
+    Xtest, Ytest = load_data('digitstest.txt')
 
     cross_train = []
     cross_valid = []
@@ -83,7 +81,7 @@ def main():
 
         calculate_error(model, cross_train, accuracy_train, Xtrain, Ytrain)
         calculate_error(model, cross_valid, accuracy_valid, Xvalid, Yvalid)
-        print(cross_train)
+        print(cross_train[-1])
 
     for i in range(len(model.layers) - 1):
         W = model.layers[i].W
