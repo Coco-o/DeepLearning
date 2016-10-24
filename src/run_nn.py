@@ -1,45 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import argparse
-import neural_network
-
-def parser():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-b', '--beta')
-    parser.add_argument('-a', '--alpha')
-    parser.add_argument('-l', '--lmbda')
-    parser.add_argument('-e', '--epoch')
-    parser.add_argument('-i', '--hidden')
-
-    return parser.parse_args()
-
-def load_data(filename):
-    data = np.loadtxt(filename, delimiter=',')
-    indx = np.arange(data.shape[0])
-    np.random.shuffle(indx)
-    data = data[indx]
-    X = data[:, 0: 784]
-    Y = data[:, 784]
-
-    return X, Y
-
-def visualize(W):
-    for j in range(W.shape[1]):
-        weight = W[:,j]
-        weight = np.reshape(weight, (28, 28))
-        plt.subplot(W.shape[1] / 10, 10, j + 1)
-        plt.imshow(weight)
-        plt.axis('off')
-    plt.show()
-
-def plot_curve(error1, error2, message):
-    x = np.arange(0, len(error1))
-    plt.plot(x, error1)
-    plt.hold(True)
-    plt.plot(x, error2)
-    plt.xlabel('Epoch')
-    plt.ylabel(message)
-    plt.show()
+import models.neural_network
+import utils
 
 def calculate_error(model, cross, accuracy, X, Y):
     sum = 0
@@ -53,7 +16,7 @@ def calculate_error(model, cross, accuracy, X, Y):
     accuracy.append(1 - sum / len(Y))
 
 def main():
-    args = parser()
+    args = utils.parser()
     hidden = int(args.hidden)
     alpha = float(args.alpha)
     beta = float(args.beta)
@@ -64,9 +27,8 @@ def main():
     model.add(neural_network.Sigmoid(784, hidden))
     model.add(neural_network.Softmax(hidden, 10))
 
-    Xtrain, Ytrain = load_data('digitstrain.txt')
-    Xvalid, Yvalid = load_data('digitsvalid.txt')
-    Xtest, Ytest = load_data('digitstest.txt')
+    Xtrain, Ytrain = load_data('../data/digitstrain.txt')
+    Xvalid, Yvalid = load_data('../data/digitsvalid.txt')
 
     cross_train = []
     cross_valid = []
@@ -85,10 +47,10 @@ def main():
 
     for i in range(len(model.layers) - 1):
         W = model.layers[i].W
-        visualize(W)
+        utils.visualize(W)
 
-    plot_curve(cross_train, cross_valid, 'cross entropy error')
-    plot_curve(accuracy_train, accuracy_valid, 'classificatoin error')
+    utils.plot_curve(cross_train, cross_valid, 'cross entropy error')
+    utils.plot_curve(accuracy_train, accuracy_valid, 'classificatoin error')
 
 if __name__ == "__main__":
     main()
