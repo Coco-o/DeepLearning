@@ -23,12 +23,12 @@ def main():
     lmbda = float(args.lmbda)
     epoch = int(args.epoch)
 
-    model = neural_network.Model()
-    model.add(neural_network.Sigmoid(784, hidden))
-    model.add(neural_network.Softmax(hidden, 10))
+    model = models.neural_network.Model()
+    model.add(models.neural_network.Sigmoid(784, hidden))
+    model.add(models.neural_network.Softmax(hidden, 10))
 
-    Xtrain, Ytrain = load_data('../data/digitstrain.txt')
-    Xvalid, Yvalid = load_data('../data/digitsvalid.txt')
+    Xtrain, Ytrain = utils.load_data('../data/digitstrain.txt', False)
+    Xvalid, Yvalid = utils.load_data('../data/digitsvalid.txt', False)
 
     cross_train = []
     cross_valid = []

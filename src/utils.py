@@ -1,7 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import argparse
-
+'''
+beta: parameter for momentum
+alpha: learning rate
+lmbda: parameter for L2 regularization
+'''
 def parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('-b', '--beta')
@@ -12,12 +16,15 @@ def parser():
 
     return parser.parse_args()
 
-def load_data(filename):
+def load_data(filename, binarized=True):
     data = np.loadtxt(filename, delimiter=',')
     indx = np.arange(data.shape[0])
     np.random.shuffle(indx)
     data = data[indx]
     X = data[:, 0: 784]
+    if binarized:
+        X[X > 0.5] = 1
+        X[X < 0.5] = 0
     Y = data[:, 784]
 
     return X, Y
